@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .form import AddLinkForm
+from .forms import AddLinkForm
 from .models import Link
 # Create your views here.
  
@@ -14,7 +14,7 @@ def home(request):
 	error=None
 
 	form=AddLinkForm(request.POST or None)
-	if request.method='POST':
+	if request.method == 'POST':
 		try:
 			if form.is_valid:
 				form.save()
@@ -23,8 +23,8 @@ def home(request):
 			error='Ups could get the name or price'
 		except:
 			error='Ups somthing went wrong!'
-	else:
-		form=AddLinkForm()
+	
+	form=AddLinkForm()
 
 
 	qs=Link.objects.all()
@@ -43,3 +43,4 @@ def home(request):
 		'error':error,
 		'nb_discounted':nb_discounted
 	}
+	return render(request,'product.html',context)
