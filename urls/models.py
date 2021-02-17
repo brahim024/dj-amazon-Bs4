@@ -2,7 +2,7 @@ from django.db import models
 from .utils import get_urls_data
 # Create your models here.
 class Link(models.Model):
-	name=models.CharField(max_length=300)
+	name=models.CharField(max_length=300,blank=True)
 	url=models.URLField()
 	current_price=models.FloatField(blank=True)
 	old_price=models.FloatField(default=0)
@@ -18,10 +18,10 @@ class Link(models.Model):
 
 	def save(self,*args,**kwargs):
 		name,price=get_urls_data(self.url)
-
+		old_price=self.current_price
 		if self.current_price :
 			if price !=old_price:
-				diff = price-old_price
+				diff = price - old_price
 				self.price_different=round(diff,2)
 				self.old_price=old_price
 		else:
@@ -32,3 +32,4 @@ class Link(models.Model):
 		self.name=name
 		self.current_price=price
 		super().save(*args,**kwargs)
+ 
