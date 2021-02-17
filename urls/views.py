@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .form import AddLinkForm
+from .models import Link
 # Create your views here.
  
 # qs
@@ -9,7 +10,7 @@ from .form import AddLinkForm
 # error(if exist urls)
 
 def home(request):
-	no_discounted=0
+	nb_discounted=0   # number of discounted
 	error=None
 
 	form=AddLinkForm(request.POST or None)
@@ -24,3 +25,21 @@ def home(request):
 			error='Ups somthing went wrong!'
 	else:
 		form=AddLinkForm()
+
+
+	qs=Link.objects.all()
+	item_no=qs.count()  # item number
+
+	if item_no >0:
+		discount_list=[]
+		for item in qs:
+			if item.old_price > item.current_price:
+				discount_list.append(item)
+			nb_discounted=len(discount_list)
+	context={
+		'qs':qs,
+		'item_no':item_no,
+		'form':form,
+		'error':error,
+		'nb_discounted':nb_discounted
+	}
